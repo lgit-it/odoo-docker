@@ -1,0 +1,41 @@
+version: '3'
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432/tcp
+    environment:
+    - POSTGRES_PASSWORD=odoo
+    - POSTGRES_USER=odoo
+    - POSTGRES_DB=postgres
+    - PGDATA=/var/lib/postgresql/data/pgdata
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - 1025:1025/tcp
+      - 1080:1080/tcp
+  web:
+    image: odoo:14.0
+    build:
+      context: ../14.0
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - mailcatcher
+    ports:
+      - "8069:8069/tcp"
+      - "5682:5682/tcp"
+    volumes:
+      - web-data:/var/lib/odoo
+      - ../../config:/etc/odoo
+      - ../../addons:/mnt/extra-addons
+      - ../../workings:/mnt/workings
+    entrypoint: /etc/odoo/entrypoint.sh
+    command: debug
+volumes:
+  db-data:
+    driver: local
+  web-data:
+    driver: local

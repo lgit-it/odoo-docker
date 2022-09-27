@@ -38,6 +38,11 @@ case "$1" in
             exec odoo "$@" "${DB_ARGS[@]}"
         fi
         ;;
+    debug)
+        shift
+        wait-for-psql.py ${DB_ARGS[@]} --timeout=30
+        exec python3 -m debugpy --listen 0.0.0.0:5682 /usr/bin/odoo -c /etc/odoo/odoo.conf  "$@" "${DB_ARGS[@]}"
+        ;;
     -*)
         wait-for-psql.py ${DB_ARGS[@]} --timeout=30
         exec odoo "$@" "${DB_ARGS[@]}"
