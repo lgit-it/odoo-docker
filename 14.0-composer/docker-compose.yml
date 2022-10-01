@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:13
     volumes:
-      - db-data:/var/lib/postgresql/data/pgdata
+      - ../../db-data:/var/lib/postgresql/data/pgdata
     ports:
       - 5432:5432/tcp
     environment:
@@ -25,15 +25,15 @@ services:
       - db
       - mailcatcher
     ports:
-      - "8069:8069/tcp"
-      - "5682:5682/tcp"
+      - 8069:8069/tcp
+      - 5682:5682/tcp
     volumes:
-      - web-data:/var/lib/odoo
+      - ../../web-data:/var/lib/odoo
       - ../../config:/etc/odoo
       - ../../addons:/mnt/extra-addons
       - ../../workings:/mnt/workings
     entrypoint: /etc/odoo/entrypoint.sh
-    command: debug
+    command: debug -d vivairauscedo1  -u vcrtimesheet --dev=xml
 volumes:
   db-data:
     driver: local
